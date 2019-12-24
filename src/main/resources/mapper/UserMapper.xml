@@ -2,17 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.test.mapper.UserMapper">
 
+    <!--验证用户账号和密码-->
     <select id="getInfo" parameterType="String" resultType="com.example.test.bean.UserBean">
         SELECT * FROM user
         WHERE name = #{name}
         AND password = #{password};
     </select>
 
+    <!--根据ID查询用户信息-->
     <select id="selectUserById" parameterType="String" resultType="com.example.test.bean.UserBean">
         SELECT * FROM user
         WHERE id = #{id};
     </select>
 
+    <!--插入新用户信息，ID是自动生成的,返回数据库操作影响行数，为0则是失败-->
     <insert id="insertUser" parameterType="com.example.test.bean.UserBean">
         INSERT InTO
             user(name,password,role)
@@ -20,11 +23,13 @@
             (#{name},#{password},#{role});
     </insert>
 
+    <!--根据ID删除用户，返回数据库操作影响行数，为0则是失败-->
     <delete id="deleteUser" parameterType="String">
         DELETE FROM user
         WHERE id = #{id};
     </delete>
 
+    <!--根据ID修改用户信息，返回数据库操作影响行数，为0则是失败-->
     <update id="updateUser" parameterType="com.example.test.bean.UserBean">
         UPDATE user
         SET password = #{password},
@@ -33,6 +38,7 @@
         WHERE id = #{id};
     </update>
 
+    <!--查询所有用户信息，返回一个List<Bean>-->
     <select id="getAllUser" resultType="com.example.test.bean.UserBean">
         SELECT * FROM user ;
     </select>
