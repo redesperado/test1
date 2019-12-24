@@ -24,12 +24,11 @@ public class ModifyUserController {
      * @param modelMap
      * @return
      */
-    @ResponseBody
-    @RequestMapping
-    public ModelMap queryAllUser(ModelMap modelMap){
+    @RequestMapping("/users")
+    public String showUsers(ModelMap modelMap){
         List<UserBean> userList = userService.queryAllUser();
         modelMap.addAttribute("userList",userList);
-        return modelMap;
+        return "users";
     }
 
     /**
@@ -42,7 +41,7 @@ public class ModifyUserController {
     @ResponseBody
     public Map addUser(UserBean userBean){
         int flag = userService.addUser(userBean);
-        Map<String,Object> map = new HashMap<>();
+        Map<String,Object> map = new HashMap<String,Object>();
         if(flag == 1){
             map.put("msg","新增用户成功");
             return map;
@@ -64,7 +63,6 @@ public class ModifyUserController {
         int flag = userService.dropUser(id);
         List<UserBean> userList = userService.queryAllUser();
         modelMap.addAttribute("userList",userList);
-        Map<String,Object> map = new HashMap<>();
         if(flag == 1){
             return "users";
         }else {
