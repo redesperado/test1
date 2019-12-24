@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id = "selectResult">
+        <table class="table table-dark table-hover">
+            <thead>
+            <tr>
+                <th>用户ID</th>
+                <th>用户名称</th>
+                <th>用户密码</th>
+                <th>用户权限</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${userList}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.password}"></td>
+                <td th:text="${user.role}"></td>
+                <td>
+                    <a th:href = "@{/user+{id}(id=${user.id})}">修改</a>
+                    <a th:href = "@{/deleteUser+{id}(id=${user.id})}" id = "delete">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id = "addUser">
+        <form name="addUser">
+            <div class="form-group">
+                <label for="name">name:</label>
+                <input type="text" class="form-control" name="name" id="name">
+            </div>
+            <div class="form-group">
+                <label for="pwd">Password:</label>
+                <input type="password" class="form-control" name="pwd" id = "pwd">
+            </div>
+            <div class="form-check">
+                <label for="role">role:</label>
+                <select class="form-control" name="role" id = "role">
+                    <option>admin</option>
+                    <option>user</option>
+                </select>
+            </div>
+        </form>
+        <button id = "add">AddUser</button>
+
+    </div>
+
+    <script >
+        //字符串判空方法
+        function isBlank(str){
+            if(str == "" || str == null || str == undefined){
+                return true;
+            }else {
+                return false;
+            }
+        }
+        //添加用户js响应事件
+        $("#add").click(function(){
+            var name = document.forms["addUser"]["name"].value;
+            var password = document.forms["addUser"]["pwd"].value;
+            var role = document.forms["addUser"]["role"].value;
+            //判断是否有未填项
+            if(isBlank(name) || isBlank(password) || isBlank(role)){
+                window.confirm("请完善信息");
+            }else {
+                var param = {
+                    "name": name,
+                    "password": password,
+                    "role": role
+                };
+                $.ajax({
+                    url:"/addUser", //请求url
+                    data: param,    //请求参数
+                    async: true,    //是否异步
+                    success: function f(result) {
+                        window.confirm(result.msg); //新增用户成功提示框
+                        location.href = "users";    //重新加载界面，同步数据库信息
+                    }
+                });
+
+            }
+
+        });
+    </script>
+</body>
+</html>

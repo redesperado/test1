@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>UserInfo</title>
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="modifyUser">
+        <form name="modifyUser">
+            <div class="form-group">
+                <label for="id">ID:</label>
+                <input type="text" class="form-control" name="id" id="id" th:value="${user.getId()}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="name">name:</label>
+                <input type="text" class="form-control" name="name" id="name" th:value="${user.getName()}">
+            </div>
+            <div class="form-group">
+                <label for="pwd">Password:</label>
+                <input type="text" class="form-control" name="pwd" id = "pwd" th:value="${user.getPassword()}">
+            </div>
+            <div class="form-check">
+                <label for="role">role:</label>
+                <select class="form-control" name="role" id = "role" th:value="${user.getRole()}">
+                    <option th:selected="${user.getRole()=='admin'}" value = "admin">admin</option>
+                    <option th:selected="${user.getRole()=='user'}" value = "user">user</option>
+                </select>
+            </div>
+        </form>
+        <button id = "modify">ModifyUser</button>
+    </div>
+    <script >
+        //字符串判空方法
+        function isBlank(str){
+            if(str == "" || str == null || str == undefined){
+                return true;
+            }else {
+                return false;
+            }
+        }
+        //添加用户js响应事件
+        $("#modify").click(function(){
+            var id = $("#id").val();
+            var name = $("#name").val();
+            var password = $("#pwd").val();
+            var role = $("#role").val();
+            //判断是否有未填项
+            if(isBlank(name) || isBlank(password) || isBlank(role)){
+                window.confirm("请完善信息");
+            }else {
+                var param = {
+                    "id": id,
+                    "name": name,
+                    "password": password,
+                    "role": role
+                };
+                $.ajax({
+                    url:"/modifyUser", //请求url
+                    data: param,    //请求参数
+                    async: true,    //是否异步
+                    success: function f(result) {
+                        window.confirm(result.msg); //修改用户信息成功提示框
+                        location.href = "users";    //重新加载界面，同步数据库信息
+                    }
+                });
+
+            }
+
+        });
+    </script>
+</body>
+</html>
